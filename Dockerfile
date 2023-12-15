@@ -6,13 +6,13 @@ WORKDIR /app
 
 # copy all files from current directory to /app in container
 COPY the_app.py /app
+COPY speech_synthesis.py /app
 COPY requirements.txt /app
 
 
 # set environment variables
-
-ENV SUBSCRIPTION_KEY="--"
-ENV REGION="--"
+ENV SUBSCRIPTION_KEY="a6959c5c06554b339ed1f311e4b0a8db"
+ENV REGION="westeurope"
 
 # Install libssl1.1 from a specific repository
 RUN echo "deb http://deb.debian.org/debian bullseye main" > /etc/apt/sources.list.d/bullseye.list && \
@@ -27,4 +27,4 @@ EXPOSE 8501
 
 
 # run app.py at container launch
-CMD ["streamlit", "run", "the_app.py"]
+CMD ["streamlit", "run", "speech_synthesis.py"]

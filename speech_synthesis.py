@@ -25,23 +25,63 @@ st.write("Enter text and synthesize it into speech using Azure Cognitive Service
 # User input for text
 user_input = st.text_area("Enter text to synthesize", "Hello, world!")
 
+# Dropdown for voice selection
+available_voices = [
+    "Microsoft Server Speech Text to Speech Voice (en-US, JennyMultilingualNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, JennyMultilingualV2Neural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, RyanMultilingualNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, JennyNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, GuyNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AriaNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, DavisNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AmberNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AnaNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AndrewNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AshleyNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, BrandonNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, BrianNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, ChristopherNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, CoraNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, ElizabethNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, EmmaNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, EricNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, JacobNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, JaneNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, JasonNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, MichelleNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, MonicaNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, NancyNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, RogerNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, SaraNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, SteffanNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, TonyNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AIGenerate1Neural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AIGenerate2Neural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AndrewMultilingualNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AvaMultilingualNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, AvaNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, BlueNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, BrianMultilingualNeural)",
+    "Microsoft Server Speech Text to Speech Voice (en-US, EmmaMultilingualNeural)",
+    "Microsoft Server Speech Text to Speech Voice (te-IN, ShrutiNeural)",
+    "Microsoft Server Speech Text to Speech Voice (te-IN, MohanNeural)",
+]
+
+voice_selection = st.selectbox("Choose a voice", available_voices)
+
 
 # Function to perform speech synthesis
-def speech_synthesis_to_wave_file(text):
+def speech_synthesis_to_wave_file(text, voice):
     speech_config = speechsdk.SpeechConfig(
         subscription=speech_key, region=service_region
     )
+    speech_config.speech_synthesis_voice_name = voice
+
     file_name = "outputaudio.wav"
     file_config = speechsdk.audio.AudioOutputConfig(filename=file_name)
     speech_synthesizer = speechsdk.SpeechSynthesizer(
         speech_config=speech_config, audio_config=file_config
     )
-
-    # Set the voice name here
-    voice = (
-        "Microsoft Server Speech Text to Speech Voice (it-IT, JennyMultilingualNeural)"
-    )
-    speech_synthesizer.speech_synthesis_voice_name = voice
 
     result = speech_synthesizer.speak_text_async(text).get()
     if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
@@ -57,7 +97,7 @@ def speech_synthesis_to_wave_file(text):
 # Synthesize button
 if st.button("Synthesize"):
     with st.spinner("Synthesizing..."):
-        output_file = speech_synthesis_to_wave_file(user_input)
+        output_file = speech_synthesis_to_wave_file(user_input, voice_selection)
         if output_file:
             st.success(f"Synthesis complete.")
             # Play audio option
